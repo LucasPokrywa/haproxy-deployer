@@ -3,6 +3,11 @@
 .env.*
 !.env.example
 
+# Certificats et clés privées locales
+certs/*.pem
+certs/*.key
+certs/*.crt
+
 # Journaux et fichiers temporaires
 *.log
 *.tmp

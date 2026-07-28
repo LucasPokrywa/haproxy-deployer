@@ -68,8 +68,11 @@ peut être versionné, contrairement au fichier `.env` local.
 
 | Variable | Description | Exemple |
 | --- | --- | --- |
-| `HAPROXY_PUBLIC_PORT` | Port exposé sur la machine | `8080` |
-| `HAPROXY_LISTEN_PORT` | Port écouté par HAProxy dans le conteneur | `80` |
+| `HAPROXY_HTTP_PUBLIC_PORT` | Port HTTP exposé sur la machine | `80` |
+| `HAPROXY_HTTP_LISTEN_PORT` | Port HTTP écouté dans le conteneur | `80` |
+| `HAPROXY_HTTPS_PUBLIC_PORT` | Port HTTPS exposé avec `--https` | `443` |
+| `HAPROXY_HTTPS_LISTEN_PORT` | Port HTTPS écouté avec `--https` | `443` |
+| `HAPROXY_CERTIFICATE_PATH` | Chemin local du certificat PEM | `./certs/site.pem` |
 | `BACKEND_1_HOST` | Nom DNS ou adresse du premier backend | `web1` |
 | `BACKEND_1_PORT` | Port du premier backend | `80` |
 | `BACKEND_2_HOST` | Nom DNS ou adresse du second backend | `web2` |
@@ -106,6 +109,16 @@ Lancer les serveurs d’exemple :
 ```bash
 ./deploy --example
 ```
+
+Activer HTTPS en complément de HTTP :
+
+```bash
+./deploy --https
+```
+
+Cette option nécessite le certificat PEM indiqué par
+`HAPROXY_CERTIFICATE_PATH`. Le fichier doit contenir le certificat et sa clé
+privée. Les fichiers `certs/*.pem` et `certs/*.key` sont ignorés par Git.
 
 Lancer le benchmark avec les backends définis dans `.env` :
 
@@ -144,6 +157,7 @@ Les formes courtes sont également disponibles :
 -e  --example
 -a  --all
 -b  --benchmark
+-s  --https
 -d  --destroy
 -h  --help
 ```

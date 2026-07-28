@@ -6,7 +6,7 @@ services:
     env_file:
       - .env
     ports:
-      - "${HAPROXY_PUBLIC_PORT:-8080}:${HAPROXY_LISTEN_PORT:-80}"
+      - "${HAPROXY_HTTP_PUBLIC_PORT:-80}:${HAPROXY_HTTP_LISTEN_PORT:-80}"
 
   benchmark:
     build:

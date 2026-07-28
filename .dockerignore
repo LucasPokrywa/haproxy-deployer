@@ -6,4 +6,5 @@
 !haproxy/docker-entrypoint.sh
 
 !templates/
-!templates/haproxy.cfg.template
+!templates/haproxy.http.cfg.template
+!templates/haproxy.https.cfg.template

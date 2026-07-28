@@ -9,7 +9,10 @@ defaults
     timeout server ${SERVER_TIMEOUT}
 
 frontend web
-    bind :${HAPROXY_LISTEN_PORT}
+    bind :${HAPROXY_HTTP_LISTEN_PORT}
+    bind :${HAPROXY_HTTPS_LISTEN_PORT} ssl crt /etc/haproxy/certs/site.pem
+
+    http-request redirect scheme https code 301 unless { ssl_fc }
     default_backend application
 
 backend application

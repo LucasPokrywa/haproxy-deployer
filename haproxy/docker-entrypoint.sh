@@ -1,8 +1,10 @@
 #!/bin/sh
 set -eu
 
+HAPROXY_TEMPLATE="${HAPROXY_TEMPLATE:-/etc/haproxy/haproxy.http.cfg.template}"
+
 envsubst \
-    < /etc/haproxy/haproxy.cfg.template \
+    < "$HAPROXY_TEMPLATE" \
     > /usr/local/etc/haproxy/haproxy.cfg
 
 haproxy -c -f /usr/local/etc/haproxy/haproxy.cfg

@@ -1,0 +1,17 @@
+#!/bin/sh
+
+mkdir -p certs
+
+openssl req \
+  -x509 \
+  -newkey rsa:2048 \
+  -sha256 \
+  -nodes \
+  -days 365 \
+  -keyout certs/site.key \
+  -out certs/site.crt \
+  -subj "/CN=localhost" \
+  -addext "subjectAltName=DNS:localhost,IP:127.0.0.1"
+
+cat certs/site.crt certs/site.key > certs/site.pem
+chmod 600 certs/site.key certs/site.pem

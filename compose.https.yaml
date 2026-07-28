@@ -1,0 +1,11 @@
+services:
+  haproxy:
+    environment:
+      HAPROXY_TEMPLATE: /etc/haproxy/haproxy.https.cfg.template
+    ports:
+      - "${HAPROXY_HTTPS_PUBLIC_PORT:-443}:${HAPROXY_HTTPS_LISTEN_PORT:-443}"
+    volumes:
+      - type: bind
+        source: ${HAPROXY_CERTIFICATE_PATH}
+        target: /etc/haproxy/certs/site.pem
+        read_only: true
