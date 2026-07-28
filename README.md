@@ -8,7 +8,8 @@ composé de deux serveurs Nginx.
 
 - Docker ;
 - Docker Compose v2 (`docker compose`) ;
-- Bash.
+- Bash ;
+- OpenSSL, uniquement pour générer un certificat local autosigné.
 
 ## Démarrage rapide avec l’exemple
 
@@ -27,7 +28,7 @@ Lancer HAProxy avec les deux serveurs web d’exemple :
 HAProxy est alors disponible, par défaut, à l’adresse :
 
 ```text
-http://localhost:8080
+http://localhost
 ```
 
 Pour arrêter et supprimer les conteneurs du projet :
@@ -87,8 +88,71 @@ peut être versionné, contrairement au fichier `.env` local.
 | `BENCHMARK_DURATION` | Durée du benchmark | `30s` |
 
 La configuration HAProxy est générée depuis
-`templates/haproxy.cfg.template`, puis validée avec `haproxy -c` avant le
-démarrage du processus.
+`templates/haproxy.http.cfg.template` ou
+`templates/haproxy.https.cfg.template`, puis validée avec `haproxy -c` avant
+le démarrage du processus.
+
+## HTTPS optionnel
+
+Par défaut, le projet active uniquement HTTP. L’option `--https` ajoute le port
+HTTPS, monte le certificat configuré et utilise le modèle HAProxy HTTPS :
+
+```bash
+./deploy --https
+```
+
+Avec les serveurs d’exemple :
+
+```bash
+./deploy --example --https
+```
+
+Lorsque HTTPS est actif, les requêtes HTTP sont redirigées vers HTTPS.
+
+### Générer un certificat local
+
+Créer un certificat autosigné pour `localhost` :
+
+```bash
+mkdir -p certs
+
+openssl req \
+  -x509 \
+  -newkey rsa:2048 \
+  -sha256 \
+  -nodes \
+  -days 365 \
+  -keyout certs/site.key \
+  -out certs/site.crt \
+  -subj "/CN=localhost" \
+  -addext "subjectAltName=DNS:localhost,IP:127.0.0.1"
+```
+
+Créer ensuite le fichier PEM attendu par HAProxy :
+
+```bash
+cat certs/site.crt certs/site.key > certs/site.pem
+chmod 600 certs/site.key certs/site.pem
+```
+
+Vérifier le chemin dans `.env` :
+
+```dotenv
+HAPROXY_CERTIFICATE_PATH=./certs/site.pem
+```
+
+Puis lancer et tester :
+
+```bash
+./deploy --example --https
+curl -k https://localhost/
+```
+
+L’option `-k` est nécessaire pour ce test, car le certificat autosigné n’est pas
+reconnu par une autorité de certification publique. Il ne doit pas être utilisé
+en production. En production, utiliser un certificat valide, par exemple fourni
+par Let’s Encrypt, et réunir la chaîne de certificats et la clé privée dans le
+fichier PEM attendu par HAProxy.
 
 ## Commandes
 
@@ -118,7 +182,8 @@ Activer HTTPS en complément de HTTP :
 
 Cette option nécessite le certificat PEM indiqué par
 `HAPROXY_CERTIFICATE_PATH`. Le fichier doit contenir le certificat et sa clé
-privée. Les fichiers `certs/*.pem` et `certs/*.key` sont ignorés par Git.
+privée. Les fichiers `certs/*.pem` et `certs/*.key` sont ignorés par Git et ne
+doivent pas être commités.
 
 Lancer le benchmark avec les backends définis dans `.env` :
 
@@ -130,6 +195,12 @@ Lancer l’exemple puis le benchmark :
 
 ```bash
 ./deploy --example --benchmark
+```
+
+Lancer l’exemple avec HTTPS puis le benchmark :
+
+```bash
+./deploy --example --https --benchmark
 ```
 
 Charger tous les fichiers Compose additionnels :
