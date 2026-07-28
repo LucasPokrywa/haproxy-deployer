@@ -1,0 +1,28 @@
+services:
+  haproxy:
+    build:
+      context: ./haproxy
+    ports:
+      - "80:80"
+    depends_on:
+      - web1
+      - web2
+
+  benchmark:
+    build:
+      context: ./benchmark
+    profiles:
+      - benchmark
+    depends_on:
+      - haproxy
+    command:
+      - http://haproxy/
+
+# Example
+  web1:
+    build:
+      context: ./web1
+
+  web2:
+    build:
+      context: ./web2

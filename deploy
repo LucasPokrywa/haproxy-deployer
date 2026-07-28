@@ -1,0 +1,52 @@
+#!/bin/bash
+
+set -e
+
+usage() {
+    cat <<EOF
+Usage: $0 [OPTIONS]
+
+Options:
+  -b, --benchmark, --bench    Lance uniquement le benchmark
+  -h, --help                  Affiche cette aide
+
+Exemples:
+  $0
+      Construit et lance HAProxy, web1 et web2.
+
+  $0 -b
+      Lance uniquement le benchmark.
+
+  $0 --benchmark
+      Lance uniquement le benchmark.
+EOF
+}
+
+BENCHMARK=false
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -b|--benchmark|--bench)
+            BENCHMARK=true
+            shift
+            ;;
+        -h|--help)
+            usage
+            exit 0
+            ;;
+        *)
+            echo "Erreur : option inconnue '$1'"
+            echo
+            usage
+            exit 1
+            ;;
+    esac
+done
+
+if $BENCHMARK; then
+    echo ">> Lancement du benchmark..."
+    docker compose --profile benchmark run --rm benchmark
+else
+    echo ">> Construction et lancement de la stack..."
+    docker compose up -d --build
+fi
