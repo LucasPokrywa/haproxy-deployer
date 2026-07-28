@@ -1,0 +1,18 @@
+global
+    log stdout format raw local0
+
+defaults
+    log global
+    mode http
+    timeout connect ${CONNECT_TIMEOUT}
+    timeout client ${CLIENT_TIMEOUT}
+    timeout server ${SERVER_TIMEOUT}
+
+frontend web
+    bind :${HAPROXY_LISTEN_PORT}
+    default_backend application
+
+backend application
+    balance ${BALANCE_ALGORITHM}
+    server backend1 ${BACKEND_1_HOST}:${BACKEND_1_PORT} check
+    server backend2 ${BACKEND_2_HOST}:${BACKEND_2_PORT} check

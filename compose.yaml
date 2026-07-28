@@ -1,0 +1,19 @@
+services:
+  haproxy:
+    build:
+      context: .
+      dockerfile: haproxy/Dockerfile
+    env_file:
+      - .env
+    ports:
+      - "${HAPROXY_PUBLIC_PORT:-8080}:${HAPROXY_LISTEN_PORT:-80}"
+
+  benchmark:
+    build:
+      context: ./benchmark
+    env_file:
+      - .env
+    profiles:
+      - benchmark
+    depends_on:
+      - haproxy
