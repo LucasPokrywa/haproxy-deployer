@@ -2,6 +2,8 @@
 
 set -e
 
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+
 usage() {
     cat <<EOF
 Usage: $0 [OPTIONS]
@@ -75,26 +77,35 @@ if $DESTROY; then
 fi
 
 COMPOSE_FILES=(
-    -f compose.yaml
+    --project-directory "$SCRIPT_DIR"
+    --env-file "$SCRIPT_DIR/.env"
+    -f "$SCRIPT_DIR/compose.yaml"
 )
 
 add_compose_file() {
     local compose_file="$1"
+    local resolved_file
     local existing_file
 
-    if [[ ! -f "$compose_file" ]]; then
-        echo "Erreur : fichier Compose introuvable : $compose_file" >&2
+    if [[ "$compose_file" = /* ]]; then
+        resolved_file="$compose_file"
+    else
+        resolved_file="$SCRIPT_DIR/$compose_file"
+    fi
+
+    if [[ ! -f "$resolved_file" ]]; then
+        echo "Erreur : fichier Compose introuvable : $resolved_file" >&2
         exit 1
     fi
 
     for existing_file in "${COMPOSE_FILES[@]}"; do
-        if [[ "$existing_file" == "$compose_file" ]]; then
+        if [[ "$existing_file" == "$resolved_file" ]]; then
             return
         fi
     done
 
     COMPOSE_FILES+=(
-        -f "$compose_file"
+        -f "$resolved_file"
     )
 }
 
@@ -103,7 +114,7 @@ if $EXAMPLE; then
 fi
 
 if $ALL; then
-    COMPOSE_LIST_FILE="compose-files.list"
+    COMPOSE_LIST_FILE="$SCRIPT_DIR/compose-files.list"
 
     if [[ ! -f "$COMPOSE_LIST_FILE" ]]; then
         echo "Erreur : liste de fichiers Compose introuvable : $COMPOSE_LIST_FILE" >&2

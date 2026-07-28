@@ -1,0 +1,9 @@
+# Le contexte racine sert uniquement à construire l'image HAProxy.
+**
+
+!haproxy/
+!haproxy/Dockerfile
+!haproxy/docker-entrypoint.sh
+
+!templates/
+!templates/haproxy.cfg.template

@@ -1,1 +1,18 @@
+# Configuration locale et éventuels secrets
 .env
+.env.*
+!.env.example
+
+# Journaux et fichiers temporaires
+*.log
+*.tmp
+*.swp
+*~
+
+# Éditeurs
+.idea/
+.vscode/
+
+# Systèmes d'exploitation
+.DS_Store
+Thumbs.db
