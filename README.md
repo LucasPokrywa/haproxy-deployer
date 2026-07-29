@@ -281,8 +281,19 @@ sur un environnement partagé ou de production.
 
 ## Versions des images
 
-Pour obtenir des constructions reproductibles, il est préférable d’épingler les
-images Docker plutôt que d’utiliser le tag `latest`.
+Les Dockerfiles utilisent des versions explicites :
+
+```text
+HAProxy 3.2.21 Alpine
+Nginx 1.31.3
+wrk 4.0.2
+```
+
+Ces versions évitent de récupérer automatiquement une nouvelle version majeure
+ou corrective lors d’une future construction.
+
+Pour obtenir des constructions encore plus strictement reproductibles, les
+images Docker peuvent également être épinglées par digest.
 
 Un tag flottant :
 

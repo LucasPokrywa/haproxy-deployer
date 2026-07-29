@@ -1,4 +1,4 @@
-FROM williamyeh/wrk
+FROM williamyeh/wrk:4.0.2
 
 COPY files/example.lua /scripts/example.lua
 COPY docker-entrypoint.sh /usr/local/bin/benchmark-entrypoint
