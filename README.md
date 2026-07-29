@@ -279,6 +279,14 @@ Puis :
 Le benchmark génère une charge importante. Il doit être utilisé avec prudence
 sur un environnement partagé ou de production.
 
+## Licence
+
+Ce projet est distribué sous licence MIT. Il peut être utilisé, copié, modifié,
+publié, distribué et intégré dans des projets personnels ou commerciaux, sous
+réserve de conserver la notice de copyright et la licence.
+
+Consulter le fichier [`LICENSE`](LICENSE) pour les conditions complètes.
+
 ## Versions des images
 
 Les Dockerfiles utilisent des versions explicites :
